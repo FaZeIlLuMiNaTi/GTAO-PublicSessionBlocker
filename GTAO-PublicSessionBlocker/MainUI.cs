@@ -9,7 +9,7 @@ namespace GTAO_PublicSessionBlocker
 {
     public partial class GTAOPSBMain : Form
     {
-        string targetprocess = "notepad";
+        string targetprocess = "GTA5";
         bool processSuspended = false;
         bool usingTimermode;
         bool blockingPort;
