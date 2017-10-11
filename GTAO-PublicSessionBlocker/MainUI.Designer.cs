@@ -50,7 +50,7 @@
             // 
             this.BtnBind.Location = new System.Drawing.Point(142, 73);
             this.BtnBind.Name = "BtnBind";
-            this.BtnBind.Size = new System.Drawing.Size(84, 23);
+            this.BtnBind.Size = new System.Drawing.Size(94, 23);
             this.BtnBind.TabIndex = 0;
             this.BtnBind.Text = "Bind";
             this.BtnBind.UseVisualStyleBackColor = true;
@@ -60,17 +60,17 @@
             // 
             this.CmbKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CmbKey.FormattingEnabled = true;
-            this.CmbKey.Location = new System.Drawing.Point(58, 73);
+            this.CmbKey.Location = new System.Drawing.Point(42, 75);
             this.CmbKey.Name = "CmbKey";
-            this.CmbKey.Size = new System.Drawing.Size(78, 21);
+            this.CmbKey.Size = new System.Drawing.Size(94, 21);
             this.CmbKey.TabIndex = 1;
             this.CmbKey.SelectedIndexChanged += new System.EventHandler(this.CmbKey_SelectedIndexChanged);
             // 
             // BtnSuspend
             // 
-            this.BtnSuspend.Location = new System.Drawing.Point(64, 224);
+            this.BtnSuspend.Location = new System.Drawing.Point(42, 224);
             this.BtnSuspend.Name = "BtnSuspend";
-            this.BtnSuspend.Size = new System.Drawing.Size(75, 23);
+            this.BtnSuspend.Size = new System.Drawing.Size(94, 23);
             this.BtnSuspend.TabIndex = 2;
             this.BtnSuspend.Text = "Suspend";
             this.BtnSuspend.UseVisualStyleBackColor = true;
@@ -78,9 +78,9 @@
             // 
             // BtnResume
             // 
-            this.BtnResume.Location = new System.Drawing.Point(145, 224);
+            this.BtnResume.Location = new System.Drawing.Point(142, 224);
             this.BtnResume.Name = "BtnResume";
-            this.BtnResume.Size = new System.Drawing.Size(75, 23);
+            this.BtnResume.Size = new System.Drawing.Size(94, 23);
             this.BtnResume.TabIndex = 3;
             this.BtnResume.Text = "Resume";
             this.BtnResume.UseVisualStyleBackColor = true;
