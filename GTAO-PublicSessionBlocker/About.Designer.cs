@@ -1,4 +1,6 @@
-﻿namespace GTAO_PublicSessionBlocker
+﻿using System;
+
+namespace GTAO_PublicSessionBlocker
 {
     partial class About
     {
@@ -100,7 +102,7 @@
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(271, 17);
             this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Version 0.1";
+            this.labelVersion.Text = String.Format("Version {0}", ProductVersion);
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCopyright

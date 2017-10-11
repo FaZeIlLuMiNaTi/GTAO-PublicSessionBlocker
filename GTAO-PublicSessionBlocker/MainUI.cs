@@ -1,6 +1,10 @@
 ﻿using GTAO_PublicSessionBlocker.Properties;
+using HtmlAgilityPack;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Windows.Forms;
@@ -218,6 +222,43 @@ namespace GTAO_PublicSessionBlocker
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
 
+
+
+            CheckUpdate();
+
+        }
+
+        public void CheckUpdate()
+        {
+            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/latest";
+            HtmlWeb web = new HtmlWeb();
+            HtmlAgilityPack.HtmlDocument doc = web.Load(url);
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Version currentVersion = new Version(fileVersionInfo.ProductVersion);
+            
+            Version newVersion = new Version(doc.DocumentNode.SelectNodes("//*[@id=\"js-repo-pjax-container\"]/div[2]/div[1]/div[2]/div/div[1]/ul/li[1]/a/span")[0].InnerText);
+            if (currentVersion < newVersion)
+            {
+                DialogResult dialogResult = MessageBox.Show("Update available!\nCurrent version: " + currentVersion + "\nNew version: " + newVersion +"\nWould you like to update?", "Update available", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    string updaterpath = Path.Combine(Path.GetTempPath(), "updater.exe");
+                    File.WriteAllBytes(updaterpath, Resources.Updater);
+                    ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath);
+                    Process.Start(ProcStartInfo);
+                    Close();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    // Nothing
+                }
+            }
+            else
+            {
+                // Nothing
+            }
         }
 
         private void GTAOPSBMain_FormClosing(object sender, FormClosingEventArgs e)
