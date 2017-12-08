@@ -4,15 +4,19 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GTAO_PublicSessionBlocker
 {
     public partial class GTAOPSBMain : Form
     {
+        // Create variables that will be used globally
         string targetprocess = "GTA5";
         bool processSuspended = false;
         bool usingTimermode;
@@ -23,7 +27,20 @@ namespace GTAO_PublicSessionBlocker
         public GTAOPSBMain()
         {
             InitializeComponent();
+            CheckUpdate(); // Check for any updates
         }
+
+        protected override void SetVisibleCore(bool value)
+        {
+            // Hide the form before it's ever shown.
+            if (!IsHandleCreated)
+            {
+                CreateHandle();
+                value = false;
+            }
+            base.SetVisibleCore(value);
+        }
+
 
         enum Keys // Key codes
         {
@@ -46,6 +63,7 @@ namespace GTAO_PublicSessionBlocker
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        // Listen for keypress
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x0312)
@@ -58,9 +76,7 @@ namespace GTAO_PublicSessionBlocker
                 {
                     if (usingTimermode) // If the user has timermode enabled, suspend, wait 10 seconds, resume
                     {
-                        Suspend();
-                        System.Threading.Thread.Sleep(10000); // 10 seconds (miliseconds)
-                        Resume();
+                        TimerMode();
                     }
                     else
                     {
@@ -69,6 +85,13 @@ namespace GTAO_PublicSessionBlocker
                 }
             }
             base.WndProc(ref m);
+        }
+
+        public async void TimerMode() // This stops the application UI from freezing
+        {
+            Suspend();
+            await Task.Delay(10000); // Wait 10 seconds
+            Resume();
         }
 
         public void Bind()
@@ -83,16 +106,16 @@ namespace GTAO_PublicSessionBlocker
         {
             keyBound = false;
             BtnBind.Text = "Bind to " + CmbKey.Text;
-            UnregisterHotKey(Handle, GetType().GetHashCode());
+            UnregisterHotKey(Handle, GetType().GetHashCode()); // Unbind the key
             CmbKey.Enabled = true;
         }
 
         public void Suspend()
         {
-            var processlist = Process.GetProcessesByName(targetprocess);
+            var processlist = Process.GetProcessesByName(targetprocess); // Find the process
             foreach (var process in processlist)
             {
-                process.Suspend();
+                process.Suspend(); // Suspend the process
             }
             processSuspended = true;
             BtnResume.Enabled = true;
@@ -101,10 +124,10 @@ namespace GTAO_PublicSessionBlocker
 
         public void Resume()
         {
-            var processlist = Process.GetProcessesByName(targetprocess);
+            var processlist = Process.GetProcessesByName(targetprocess); // Find the process
             foreach (var process in processlist)
             {
-                process.Resume();
+                process.Resume(); // Resume the process
             }
             processSuspended = false;
             BtnResume.Enabled = false;
@@ -113,6 +136,7 @@ namespace GTAO_PublicSessionBlocker
 
         public void FireWallAdd()
         {
+            // Add a firewall rule to block connections to the GTA Online port 
             string arguments = "advfirewall firewall add rule name=\"GTAO-PublicSessionBlocker\" dir=out action=block description=\"Block GTAO public session port\" profile=any localport=6672 remoteport=any protocol=UDP";
             ProcessStartInfo procStartInfo = new ProcessStartInfo("netsh", arguments);
 
@@ -123,8 +147,9 @@ namespace GTAO_PublicSessionBlocker
             Process.Start(procStartInfo);
         }
 
-        public void FireWallEnable()
+        public void FireWallEnable() // Never used, but a useful feature for the future.
         {
+            // Enable the firewall rule
             string arguments = "advfirewall firewall set rule name=\"GTAO-PublicSessionBlocker\" new enable=yes";
 
             ProcessStartInfo procStartInfo = new ProcessStartInfo("netsh", arguments);
@@ -136,8 +161,9 @@ namespace GTAO_PublicSessionBlocker
             Process.Start(procStartInfo);
         }
 
-        public void FireWallDisable()
+        public void FireWallDisable() // Never used, but a useful feature for the future.
         {
+            // Disable the firewall rule
             string arguments = "advfirewall firewall set rule name=\"GTAO-PublicSessionBlocker\" new enable=no";
 
             ProcessStartInfo procStartInfo = new ProcessStartInfo("netsh", arguments);
@@ -151,6 +177,7 @@ namespace GTAO_PublicSessionBlocker
 
         public void FireWallRemove()
         {
+            // Remove the firewall rule
             string arguments = "advfirewall firewall delete rule name=\"GTAO-PublicSessionBlocker\"";
             ProcessStartInfo procStartInfo = new ProcessStartInfo("netsh", arguments);
 
@@ -165,11 +192,11 @@ namespace GTAO_PublicSessionBlocker
         {
             using (About box = new About())
             {
-                box.ShowDialog();
+                box.ShowDialog(); // Show the about box
             }
         }
 
-        public void CheckYourPrivilege()
+        public void CheckYourPrivilege() // Check application privelleges for modifying the firewall
         {
             bool isElevated;
             using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
@@ -180,10 +207,10 @@ namespace GTAO_PublicSessionBlocker
 
             if (!isElevated)
             {    
-                string xd = Process.GetCurrentProcess().MainModule.FileName;
+                string FileName = Process.GetCurrentProcess().MainModule.FileName;
                 MessageBox.Show("The program needs to be relaunched as an administrator to manage the firewall.");
 
-                ProcessStartInfo procStartInfo = new ProcessStartInfo(xd);
+                ProcessStartInfo procStartInfo = new ProcessStartInfo(FileName);
 
                 procStartInfo.Verb = "runas";
                 procStartInfo.UseShellExecute = true;
@@ -191,8 +218,8 @@ namespace GTAO_PublicSessionBlocker
 
                 try
                 {
-                    Process.Start(procStartInfo);
-                    Close();
+                    Process.Start(procStartInfo); // Start the app as admin
+                    Close(); // Close the old instance
                 }
                 catch (Exception)
                 {
@@ -204,62 +231,112 @@ namespace GTAO_PublicSessionBlocker
             }
             else
             {
-                //MessageBox.Show("The process is running as administrator.");
+                // Nothing
             }
         }
-
+        
         private void GTAOPSBMain_Load(object sender, EventArgs e)
         {
+
             String[] keys = new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }; // Keys to be used
             foreach (string ke in keys)
             {
                 CmbKey.Items.Add(ke); // Add keys to combobox
             }
 
-            CmbKey.SelectedIndex = Settings.Default.BoundKey;
 
+            // Set defaults based on settings
+
+            CmbKey.SelectedIndex = Settings.Default.BoundKey;
             usingTimermode = ChkTimerMode.Checked = Settings.Default.UsingTimermode;
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
 
-
-
-            CheckUpdate();
-
         }
 
-        public void CheckUpdate()
+        public async void CheckUpdate()
         {
-            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/latest";
+
+            /***
+             * Okay, let me explain.
+             * 
+             * Set the variable containing the url for the github page and load it.
+             * Get the current version of the application.
+             * Get the new version number from the github page.
+             * Compare the version numbers.
+             * If there is a new version, ask if the user wants to update.
+             * If the user wants to update, extract the updater .exe file and launch it.
+             * 
+             * The updater will download the latest .exe from github and replace the current version.
+             * The updater will launch the new version of the project, and then close itself.
+             * 
+             * TODO: Add clause for github not being available - Done
+             * 
+             ***/
+
+            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/latest"; // URL to GitHub releases page.
             HtmlWeb web = new HtmlWeb();
-            HtmlAgilityPack.HtmlDocument doc = web.Load(url);
+            HtmlAgilityPack.HtmlDocument doc; // Make a timeout of 10 seconds?
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             Version currentVersion = new Version(fileVersionInfo.ProductVersion);
+
+            int NumberOfRetries = 3;
+            int DelayOnRetry = 1000;
+
+            for (int i=0; i <= NumberOfRetries; i++)
+            {
+                try
+                {
+                    doc = web.Load(url);
+
+                    Version newVersion = new Version(doc.DocumentNode.SelectNodes("//*[@id=\"js-repo-pjax-container\"]/div[2]/div[1]/div[2]/div/div[1]/ul/li[1]/a/span")[0].InnerText);
+                    if (currentVersion < newVersion) // Compare versions
+                    {
+                        DialogResult dialogResult = MessageBox.Show("Update available!\nCurrent version: " + currentVersion + "\nNew version: " + newVersion + "\nWould you like to update?", "Update available", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            // Extract and launch the updater
+                            string updaterpath = Path.Combine(Path.GetTempPath(), "updater.exe");
+                            File.WriteAllBytes(updaterpath, Resources.Updater);
+                            ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath);
+                            Process.Start(ProcStartInfo);
+                            Close();
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            // Nothing - Maybe hide this update until the next one is pushed
+                        }
+                    }
+                    else
+                    {
+                        // Application is up to date, no action needed
+                    }
+
+                    SetVisibleCore(true); // Show GUI
+
+                    break; // Break from for loop
+                }
+                catch (Exception)
+                {
+                    if (i < NumberOfRetries)
+                    {
+                        await Task.Delay(DelayOnRetry); // Error contacting page, retry.
+                    }
+                    else
+                    {
+                        MessageBox.Show("GitHub project page not available.\nCheck your internet connection.");
+                        SetVisibleCore(true);
+                        break;
+                    }
+
+                }
+            }
             
-            Version newVersion = new Version(doc.DocumentNode.SelectNodes("//*[@id=\"js-repo-pjax-container\"]/div[2]/div[1]/div[2]/div/div[1]/ul/li[1]/a/span")[0].InnerText);
-            if (currentVersion < newVersion)
-            {
-                DialogResult dialogResult = MessageBox.Show("Update available!\nCurrent version: " + currentVersion + "\nNew version: " + newVersion +"\nWould you like to update?", "Update available", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    string updaterpath = Path.Combine(Path.GetTempPath(), "updater.exe");
-                    File.WriteAllBytes(updaterpath, Resources.Updater);
-                    ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath);
-                    Process.Start(ProcStartInfo);
-                    Close();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    // Nothing
-                }
-            }
-            else
-            {
-                // Nothing
-            }
+
         }
+
 
         private void GTAOPSBMain_FormClosing(object sender, FormClosingEventArgs e)
         {
