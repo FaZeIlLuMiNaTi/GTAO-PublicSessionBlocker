@@ -43,6 +43,7 @@
             this.LblKeyToBind = new System.Windows.Forms.Label();
             this.LblSettings = new System.Windows.Forms.Label();
             this.LblControls = new System.Windows.Forms.Label();
+            this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -130,13 +131,14 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.checkForUpdateToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -145,7 +147,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -177,6 +179,13 @@
             this.LblControls.Size = new System.Drawing.Size(92, 25);
             this.LblControls.TabIndex = 8;
             this.LblControls.Text = "Controls";
+            // 
+            // checkForUpdateToolStripMenuItem
+            // 
+            this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
+            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.checkForUpdateToolStripMenuItem.Text = "Check for updates";
+            this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
             // 
             // GTAOPSBMain
             // 
@@ -224,6 +233,7 @@
         private System.Windows.Forms.Label LblKeyToBind;
         private System.Windows.Forms.Label LblSettings;
         private System.Windows.Forms.Label LblControls;
+        private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
     }
 }
 
