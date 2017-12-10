@@ -126,6 +126,7 @@
   <ItemGroup>
     <Content Include="Dark_Blue_Moon_Emoji_grande.ico" />
     <Content Include="ILMergeOrder.txt" />
+    <None Include="Resources\GitHubAppUpdater.exe" />
     <None Include="Resources\Updater.exe" />
   </ItemGroup>
   <ItemGroup>

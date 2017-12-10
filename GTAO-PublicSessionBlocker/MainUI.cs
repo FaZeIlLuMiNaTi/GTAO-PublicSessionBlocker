@@ -24,18 +24,7 @@ namespace GTAO_PublicSessionBlocker
         public GTAOPSBMain()
         {
             InitializeComponent();
-            CheckUpdate(false); // Check for any updates - not manually invoked
-        }
-
-        protected override void SetVisibleCore(bool value)
-        {
-            // Hide the form before it's ever shown.
-            if (!IsHandleCreated)
-            {
-                CreateHandle();
-                value = false;
-            }
-            base.SetVisibleCore(value);
+            SetVisibleCore(false);
         }
 
         public async void CheckUpdate(bool ManuallyInvoked)
@@ -59,7 +48,12 @@ namespace GTAO_PublicSessionBlocker
              * 
              ***/
 
-            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/latest"; // URL to GitHub releases page.
+            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
+            string exename = "GTAO-PublicSessionBlocker.exe"; // Name of EXE file
+
+
+
+
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc; // Make a timeout of 10 seconds? (not sure if this is even neccesary now)
 
@@ -74,7 +68,7 @@ namespace GTAO_PublicSessionBlocker
             {
                 try
                 {
-                    doc = web.Load(url);
+                    doc = web.Load(url + "latest");
 
                     Version newVersion = new Version(doc.DocumentNode.SelectNodes("//*[@id=\"js-repo-pjax-container\"]/div[2]/div[1]/div[2]/div/div[1]/ul/li[1]/a/span")[0].InnerText);
                     if (currentVersion < newVersion) // Compare versions
@@ -83,9 +77,12 @@ namespace GTAO_PublicSessionBlocker
                         if (dialogResult == DialogResult.Yes)
                         {
                             // Extract and launch the updater
-                            string updaterpath = Path.Combine(Path.GetTempPath(), "updater.exe");
-                            File.WriteAllBytes(updaterpath, Resources.Updater);
-                            ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath);
+                            string updaterpath = Path.Combine(Path.GetTempPath(), "GitHubAppUpdater.exe");
+                            File.WriteAllBytes(updaterpath, Resources.GitHubAppUpdater);
+
+
+                            string arguments = url + " " + exename;
+                            ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath, arguments);
                             Process.Start(ProcStartInfo);
                             Close();
                         }
@@ -319,6 +316,9 @@ namespace GTAO_PublicSessionBlocker
         
         private void GTAOPSBMain_Load(object sender, EventArgs e)
         {
+
+            CheckUpdate(false); // Check for any updates - not manually invoked
+
             String[] keys = new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }; // Keys to be used
             foreach (string ke in keys)
             {
