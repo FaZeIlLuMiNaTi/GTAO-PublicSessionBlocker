@@ -49,7 +49,7 @@ namespace GTAO_PublicSessionBlocker
              * 
              ***/
 
-            string url = "http://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
+            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
             string exename = "GTAO-PublicSessionBlocker.exe"; // Name of EXE file
 
             // Fix a bug that was caused by GitHub dropping support for old TLS protocols.
