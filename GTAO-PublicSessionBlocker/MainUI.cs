@@ -3,6 +3,7 @@ using HtmlAgilityPack;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -48,12 +49,12 @@ namespace GTAO_PublicSessionBlocker
              * 
              ***/
 
-            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
+            string url = "http://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
             string exename = "GTAO-PublicSessionBlocker.exe"; // Name of EXE file
 
-
-
-
+            // Fix a bug that was caused by GitHub dropping support for old TLS protocols.
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                  
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc; // Make a timeout of 10 seconds? (not sure if this is even neccesary now)
 
@@ -91,6 +92,10 @@ namespace GTAO_PublicSessionBlocker
                             // Nothing - Maybe hide this update until the next one is pushed
                         }
                     }
+                    else if (currentVersion > newVersion)
+                    {
+                        MessageBox.Show("Running a newer version than the one available!");
+                    }
                     else
                     {
                         // Application is up to date, no action needed
@@ -104,7 +109,7 @@ namespace GTAO_PublicSessionBlocker
 
                     break; // Break from for loop
                 }
-                catch (Exception)
+                catch (HtmlWebException ex)
                 {
                     if (i < NumberOfRetries)
                     {
@@ -112,7 +117,7 @@ namespace GTAO_PublicSessionBlocker
                     }
                     else
                     {
-                        MessageBox.Show("GitHub project page not available.\nCheck your internet connection.");
+                        MessageBox.Show("GitHub project page not available.\nCheck your internet connection. " + ex);
                         SetVisibleCore(true);
                         break;
                     }
