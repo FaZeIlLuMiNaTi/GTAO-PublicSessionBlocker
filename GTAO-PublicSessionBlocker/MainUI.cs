@@ -1,9 +1,8 @@
 ﻿using GTAO_PublicSessionBlocker.Properties;
-using HtmlAgilityPack;
+using Octokit;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -25,105 +24,85 @@ namespace GTAO_PublicSessionBlocker
         public GTAOPSBMain()
         {
             InitializeComponent();
-            SetVisibleCore(false);
         }
 
         public async void CheckUpdate(bool ManuallyInvoked)
         {
 
             /***
-             * Okay, let me explain.
+             * Finally got around to fixing that exception that occurs
+             * when the application is launched.
              * 
-             * Set the variable containing the url for the github page and load it.
-             * Get the current version of the application.
-             * Get the new version number from the github page.
-             * Compare the version numbers.
-             * If there is a new version, ask if the user wants to update.
-             * If the user wants to update, extract the updater .exe file and launch it.
-             * 
-             * The updater will download the latest .exe from github and replace the current version.
-             * The updater will launch the new version of the project, and then close itself.
-             * 
-             * If GitHub is unavilable, two more connection attempts will be made (totalling 3)
-             * if the site is still unavailable, cancel the update.
+             * Replaced the whole update check system with something much
+             * more elegant in order to guarantee that it'll continue to work
+             * in the future.
              * 
              ***/
 
-            string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/"; // URL to GitHub releases page - (make sure you've got the ending "/" - IMPORTANT.
-            string exename = "GTAO-PublicSessionBlocker.exe"; // Name of EXE file
+            // Hide main window
+            Opacity = 0;
+            ShowInTaskbar = false;
 
-            // Fix a bug that was caused by GitHub dropping support for old TLS protocols.
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-                  
-            HtmlWeb web = new HtmlWeb();
-            HtmlAgilityPack.HtmlDocument doc; // Make a timeout of 10 seconds? (not sure if this is even neccesary now)
-
+            // Local Version
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Version currentVersion = new Version(fileVersionInfo.ProductVersion);
+            Version localVersion = new Version(fileVersionInfo.ProductVersion);
 
-            int NumberOfRetries = 3;
-            int DelayOnRetry = 1000;
-
-            for (int i = 0; i <= NumberOfRetries; i++)
+            try
             {
-                try
+                // Get info from GitHub
+                var client = new GitHubClient(new ProductHeaderValue("GTAO-PSB"));
+                var releases = await client.Repository.Release.GetAll("FaZeIlLuMiNaTi", "GTAO-PublicSessionBlocker");
+                var latest = releases[0];
+                Version remoteVersion = new Version(latest.TagName);
+
+                string exename = AppDomain.CurrentDomain.FriendlyName; // Get name of currently running .exe file
+                string url = "https://github.com/FaZeIlLuMiNaTi/GTAO-PublicSessionBlocker/releases/download/" + latest.TagName + "/" + exename;
+
+                if (localVersion < remoteVersion)
                 {
-                    doc = web.Load(url + "latest");
-
-                    Version newVersion = new Version(doc.DocumentNode.SelectNodes("//*[@id=\"js-repo-pjax-container\"]/div[2]/div[1]/div[2]/div/div[1]/ul/li[1]/a/span")[0].InnerText);
-                    if (currentVersion < newVersion) // Compare versions
+                    // Prompt the user to update
+                    DialogResult result = MessageBox.Show(
+                        "Update available!\n\n" +
+                        "Current version: " + localVersion +
+                        "\nLatest version: " + remoteVersion +
+                        "\nRelease name: " + latest.Name +
+                        "\n\nWould you like to update?", "Update available!", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
                     {
-                        DialogResult dialogResult = MessageBox.Show("Update available!\nCurrent version: " + currentVersion + "\nNew version: " + newVersion + "\nWould you like to update?", "Update available", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            // Extract and launch the updater
-                            string updaterpath = Path.Combine(Path.GetTempPath(), "GitHubAppUpdater.exe");
-                            File.WriteAllBytes(updaterpath, Resources.GitHubAppUpdater);
+                        // Extract and launch the updater
+                        string updaterpath = Path.Combine(Path.GetTempPath(), "GitHubAppUpdater.exe");
+                        File.WriteAllBytes(updaterpath, Resources.GitHubAppUpdater);
 
-
-                            string arguments = url + " " + exename;
-                            ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath, arguments);
-                            Process.Start(ProcStartInfo);
-                            Close();
-                        }
-                        else if (dialogResult == DialogResult.No)
-                        {
-                            // Nothing - Maybe hide this update until the next one is pushed
-                        }
+                        string arguments = url + " " + exename;
+                        ProcessStartInfo ProcStartInfo = new ProcessStartInfo(updaterpath, arguments);
+                        Process.Start(ProcStartInfo);
+                        Close();
                     }
-                    else if (currentVersion > newVersion)
+                    else if (result == DialogResult.No)
                     {
-                        MessageBox.Show("Running a newer version than the one available!");
+                        // Nothing?
                     }
-                    else
-                    {
-                        // Application is up to date, no action needed
-                        if (ManuallyInvoked)
-                        {
-                            MessageBox.Show("No updates available.");
-                        }
-                    }
-
-                    SetVisibleCore(true); // Show GUI
-
-                    break; // Break from for loop
                 }
-                catch (HtmlWebException ex)
+                else if (localVersion > remoteVersion)
                 {
-                    if (i < NumberOfRetries)
-                    {
-                        await Task.Delay(DelayOnRetry); // Error contacting page, retry.
-                    }
-                    else
-                    {
-                        MessageBox.Show("GitHub project page not available.\nCheck your internet connection. " + ex);
-                        SetVisibleCore(true);
-                        break;
-                    }
-
+                    MessageBox.Show("You seem to be running a newer version than currently available to download.");
                 }
+                else if (ManuallyInvoked)
+                {
+                    MessageBox.Show("App is up-to-date.");
+                }
+
+                // Show main window
+                Opacity = 100;
+                ShowInTaskbar = true;
             }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Unable to reach github project page.");
+                MessageBox.Show("Exception details:\n\n" + exception);
+            }
+
         }
 
         enum Keys // Key codes
@@ -299,7 +278,6 @@ namespace GTAO_PublicSessionBlocker
                 procStartInfo.Verb = "runas";
                 procStartInfo.UseShellExecute = true;
 
-
                 try
                 {
                     Process.Start(procStartInfo); // Start the app as admin
@@ -310,8 +288,6 @@ namespace GTAO_PublicSessionBlocker
                     ChkBlockPort.Checked = false;
                     MessageBox.Show("The process failed to obtain administrator privileges, please try again.");
                 }
-                
-                
             }
             else
             {
@@ -320,8 +296,7 @@ namespace GTAO_PublicSessionBlocker
         }
         
         private void GTAOPSBMain_Load(object sender, EventArgs e)
-        {
-
+        {            
             CheckUpdate(false); // Check for any updates - not manually invoked
 
             String[] keys = new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }; // Keys to be used
@@ -330,14 +305,11 @@ namespace GTAO_PublicSessionBlocker
                 CmbKey.Items.Add(ke); // Add keys to combobox
             }
 
-
             // Set defaults based on settings
-
             CmbKey.SelectedIndex = Settings.Default.BoundKey;
             usingTimermode = ChkTimerMode.Checked = Settings.Default.UsingTimermode;
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
-
         }
 
         private void GTAOPSBMain_FormClosing(object sender, FormClosingEventArgs e)
