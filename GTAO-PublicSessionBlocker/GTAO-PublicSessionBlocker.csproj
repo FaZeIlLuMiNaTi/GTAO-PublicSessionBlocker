@@ -58,8 +58,8 @@
     <ApplicationIcon>Dark_Blue_Moon_Emoji_grande.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Octokit, Version=0.35.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Octokit.0.35.0\lib\net45\Octokit.dll</HintPath>
+    <Reference Include="Octokit, Version=0.36.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.36.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -107,7 +107,6 @@
     </Compile>
     <None Include="app.manifest" />
     <None Include="ILMerge.props" />
-    <None Include="ILMergeConfig.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
