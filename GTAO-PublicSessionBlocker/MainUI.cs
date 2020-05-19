@@ -15,7 +15,6 @@ namespace GTAO_PublicSessionBlocker
     {
         // Create variables that will be used globally
         string targetprocess = "GTA5"; // Process name to be targeted
-        int delay = 10000; // 10 seconds
         bool processSuspended = false;
         bool usingTimermode;
         bool blockingPort;
@@ -154,7 +153,7 @@ namespace GTAO_PublicSessionBlocker
         public async void TimerMode() // This stops the application UI from freezing
         {
             Suspend();
-            await Task.Delay(delay); // wait seconds specified in "delay".
+            await Task.Delay(10000); // Wait 10 seconds
             Resume();
         }
 
@@ -395,14 +394,12 @@ namespace GTAO_PublicSessionBlocker
             {
                 case 0:
                     targetprocess = "GTAV";
-                    delay = 10000; // 10 Seconds
                     break;
                 case 1:
                     targetprocess = "RDR2";
-                    delay = 7500; // 3 Seconds
                     break;
             }
-            MessageBox.Show("targetprocess: " + targetprocess + "\nDelay: " + delay);
+            MessageBox.Show("targetprocess: " + targetprocess);
         }
     }
 }
