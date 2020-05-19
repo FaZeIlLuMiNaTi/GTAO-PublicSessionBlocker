@@ -14,7 +14,7 @@ namespace GTAO_PublicSessionBlocker
     public partial class GTAOPSBMain : Form
     {
         // Create variables that will be used globally
-        string targetprocess = "GTA5"; // Process name to be targeted
+        string targetprocess = "GTA5";
         bool processSuspended = false;
         bool usingTimermode;
         bool blockingPort;
@@ -309,7 +309,6 @@ namespace GTAO_PublicSessionBlocker
             CmbKey.SelectedIndex = Settings.Default.BoundKey;
             usingTimermode = ChkTimerMode.Checked = Settings.Default.UsingTimermode;
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
-            CmbTarget.SelectedIndex = Settings.Default.TargetGame;
             BtnResume.Enabled = false;
         }
 
@@ -322,7 +321,6 @@ namespace GTAO_PublicSessionBlocker
             Settings.Default.BoundKey = CmbKey.SelectedIndex;
             Settings.Default.UsingTimermode = usingTimermode;
             Settings.Default.BlockingPort = blockingPort;
-            Settings.Default.TargetGame = CmbTarget.SelectedIndex;
 
             Settings.Default.Save(); // Save the settings
         }
@@ -386,20 +384,6 @@ namespace GTAO_PublicSessionBlocker
         private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CheckUpdate(true); // Manually invoked update check
-        }
-
-        private void CmbTarget_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (CmbTarget.SelectedIndex)
-            {
-                case 0:
-                    targetprocess = "GTAV";
-                    break;
-                case 1:
-                    targetprocess = "RDR2";
-                    break;
-            }
-            MessageBox.Show("targetprocess: " + targetprocess);
         }
     }
 }
