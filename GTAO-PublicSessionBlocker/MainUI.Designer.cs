@@ -39,20 +39,22 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LblKeyToBind = new System.Windows.Forms.Label();
             this.LblSettings = new System.Windows.Forms.Label();
             this.LblControls = new System.Windows.Forms.Label();
-            this.checkForUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gameLabel = new System.Windows.Forms.Label();
+            this.CmbGames = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnBind
             // 
-            this.BtnBind.Location = new System.Drawing.Point(142, 73);
+            this.BtnBind.Location = new System.Drawing.Point(142, 165);
             this.BtnBind.Name = "BtnBind";
             this.BtnBind.Size = new System.Drawing.Size(94, 23);
-            this.BtnBind.TabIndex = 0;
+            this.BtnBind.TabIndex = 2;
             this.BtnBind.Text = "Bind";
             this.BtnBind.UseVisualStyleBackColor = true;
             this.BtnBind.Click += new System.EventHandler(this.BtnBind_Click);
@@ -61,7 +63,7 @@
             // 
             this.CmbKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CmbKey.FormattingEnabled = true;
-            this.CmbKey.Location = new System.Drawing.Point(42, 75);
+            this.CmbKey.Location = new System.Drawing.Point(42, 167);
             this.CmbKey.Name = "CmbKey";
             this.CmbKey.Size = new System.Drawing.Size(94, 21);
             this.CmbKey.TabIndex = 1;
@@ -69,20 +71,20 @@
             // 
             // BtnSuspend
             // 
-            this.BtnSuspend.Location = new System.Drawing.Point(42, 224);
+            this.BtnSuspend.Location = new System.Drawing.Point(42, 316);
             this.BtnSuspend.Name = "BtnSuspend";
             this.BtnSuspend.Size = new System.Drawing.Size(94, 23);
-            this.BtnSuspend.TabIndex = 2;
+            this.BtnSuspend.TabIndex = 5;
             this.BtnSuspend.Text = "Suspend";
             this.BtnSuspend.UseVisualStyleBackColor = true;
             this.BtnSuspend.Click += new System.EventHandler(this.BtnSuspend_Click);
             // 
             // BtnResume
             // 
-            this.BtnResume.Location = new System.Drawing.Point(142, 224);
+            this.BtnResume.Location = new System.Drawing.Point(142, 316);
             this.BtnResume.Name = "BtnResume";
             this.BtnResume.Size = new System.Drawing.Size(94, 23);
-            this.BtnResume.TabIndex = 3;
+            this.BtnResume.TabIndex = 6;
             this.BtnResume.Text = "Resume";
             this.BtnResume.UseVisualStyleBackColor = true;
             this.BtnResume.Click += new System.EventHandler(this.BtnResume_Click);
@@ -90,7 +92,7 @@
             // ChkBlockPort
             // 
             this.ChkBlockPort.AutoSize = true;
-            this.ChkBlockPort.Location = new System.Drawing.Point(76, 167);
+            this.ChkBlockPort.Location = new System.Drawing.Point(75, 260);
             this.ChkBlockPort.Name = "ChkBlockPort";
             this.ChkBlockPort.Size = new System.Drawing.Size(133, 17);
             this.ChkBlockPort.TabIndex = 4;
@@ -101,10 +103,10 @@
             // ChkTimerMode
             // 
             this.ChkTimerMode.AutoSize = true;
-            this.ChkTimerMode.Location = new System.Drawing.Point(76, 144);
+            this.ChkTimerMode.Location = new System.Drawing.Point(89, 236);
             this.ChkTimerMode.Name = "ChkTimerMode";
             this.ChkTimerMode.Size = new System.Drawing.Size(104, 17);
-            this.ChkTimerMode.TabIndex = 5;
+            this.ChkTimerMode.TabIndex = 3;
             this.ChkTimerMode.Text = "Use Timer Mode";
             this.ChkTimerMode.UseVisualStyleBackColor = true;
             this.ChkTimerMode.CheckedChanged += new System.EventHandler(this.ChkTimerMode_CheckedChanged);
@@ -131,7 +133,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -144,6 +146,13 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
+            // checkForUpdateToolStripMenuItem
+            // 
+            this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
+            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.checkForUpdateToolStripMenuItem.Text = "Check for updates";
+            this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
@@ -154,44 +163,63 @@
             // LblKeyToBind
             // 
             this.LblKeyToBind.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblKeyToBind.Location = new System.Drawing.Point(82, 34);
+            this.LblKeyToBind.Location = new System.Drawing.Point(81, 126);
             this.LblKeyToBind.Name = "LblKeyToBind";
-            this.LblKeyToBind.Size = new System.Drawing.Size(121, 26);
+            this.LblKeyToBind.Size = new System.Drawing.Size(121, 25);
             this.LblKeyToBind.TabIndex = 0;
             this.LblKeyToBind.Text = "Key to bind";
+            this.LblKeyToBind.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblSettings
             // 
             this.LblSettings.AutoSize = true;
             this.LblSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
-            this.LblSettings.Location = new System.Drawing.Point(97, 110);
+            this.LblSettings.Location = new System.Drawing.Point(96, 202);
             this.LblSettings.Name = "LblSettings";
             this.LblSettings.Size = new System.Drawing.Size(90, 25);
             this.LblSettings.TabIndex = 7;
             this.LblSettings.Text = "Settings";
+            this.LblSettings.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblControls
             // 
             this.LblControls.AutoSize = true;
             this.LblControls.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
-            this.LblControls.Location = new System.Drawing.Point(96, 192);
+            this.LblControls.Location = new System.Drawing.Point(95, 284);
             this.LblControls.Name = "LblControls";
             this.LblControls.Size = new System.Drawing.Size(92, 25);
             this.LblControls.TabIndex = 8;
             this.LblControls.Text = "Controls";
+            this.LblControls.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // checkForUpdateToolStripMenuItem
+            // gameLabel
             // 
-            this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
-            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.checkForUpdateToolStripMenuItem.Text = "Check for updates";
-            this.checkForUpdateToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdateToolStripMenuItem_Click);
+            this.gameLabel.AutoSize = true;
+            this.gameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gameLabel.Location = new System.Drawing.Point(107, 44);
+            this.gameLabel.Name = "gameLabel";
+            this.gameLabel.Size = new System.Drawing.Size(69, 25);
+            this.gameLabel.TabIndex = 9;
+            this.gameLabel.Text = "Game";
+            this.gameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // CmbGames
+            // 
+            this.CmbGames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CmbGames.FormattingEnabled = true;
+            this.CmbGames.Location = new System.Drawing.Point(42, 85);
+            this.CmbGames.Name = "CmbGames";
+            this.CmbGames.Size = new System.Drawing.Size(194, 21);
+            this.CmbGames.TabIndex = 0;
+            this.CmbGames.SelectedIndexChanged += new System.EventHandler(this.CmbGames_SelectedIndexChanged);
             // 
             // GTAOPSBMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(284, 361);
+            this.Controls.Add(this.CmbGames);
+            this.Controls.Add(this.gameLabel);
             this.Controls.Add(this.LblControls);
             this.Controls.Add(this.ChkTimerMode);
             this.Controls.Add(this.ChkBlockPort);
@@ -234,6 +262,8 @@
         private System.Windows.Forms.Label LblSettings;
         private System.Windows.Forms.Label LblControls;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdateToolStripMenuItem;
+        private System.Windows.Forms.Label gameLabel;
+        private System.Windows.Forms.ComboBox CmbGames;
     }
 }
 

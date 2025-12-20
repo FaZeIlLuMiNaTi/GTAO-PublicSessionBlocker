@@ -15,6 +15,7 @@ namespace GTAO_PublicSessionBlocker
     {
         // Create variables that will be used globally
         string targetprocess = "GTA5";
+        String[] processes = new String[] { "GTA5", "GTA5_Enhanced" }; // exe names
         bool processSuspended = false;
         bool usingTimermode;
         bool blockingPort;
@@ -305,8 +306,16 @@ namespace GTAO_PublicSessionBlocker
                 CmbKey.Items.Add(ke); // Add keys to combobox
             }
 
+            String[] games = new String[] { "GTA 5", "GTA 5 Enhanced" }; // List of games
+            foreach (string ga in games)
+            {
+                CmbGames.Items.Add(ga); // Add games to combobox
+            }
+
+
             // Set defaults based on settings
             CmbKey.SelectedIndex = Settings.Default.BoundKey;
+            CmbGames.SelectedIndex = Settings.Default.SelectedGame;
             usingTimermode = ChkTimerMode.Checked = Settings.Default.UsingTimermode;
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
@@ -319,6 +328,7 @@ namespace GTAO_PublicSessionBlocker
             FireWallRemove();
 
             Settings.Default.BoundKey = CmbKey.SelectedIndex;
+            Settings.Default.SelectedGame = CmbGames.SelectedIndex;
             Settings.Default.UsingTimermode = usingTimermode;
             Settings.Default.BlockingPort = blockingPort;
 
@@ -384,6 +394,11 @@ namespace GTAO_PublicSessionBlocker
         private void checkForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CheckUpdate(true); // Manually invoked update check
+        }
+
+        private void CmbGames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            targetprocess = processes[CmbGames.SelectedIndex];
         }
     }
 }

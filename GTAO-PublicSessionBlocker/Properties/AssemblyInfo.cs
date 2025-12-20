@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GTAO-PublicSessionBlocker")]
-[assembly: AssemblyCopyright("Copyright © FaZe IlLuMiNaTi 2019")]
+[assembly: AssemblyCopyright("Copyright © FaZe IlLuMiNaTi 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("0.1.2.3")]
-[assembly: AssemblyInformationalVersion("0.1.2.3")]
+[assembly: AssemblyFileVersion("0.1.2.4")]
+[assembly: AssemblyInformationalVersion("0.1.2.4")]
