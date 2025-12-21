@@ -24,7 +24,7 @@ namespace GTAO_PublicSessionBlocker
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
             */
-
+            this.labelVersion.Text = String.Format("Version {0}", ProductVersion);
         }
 
         #region Assembly Attribute Accessors

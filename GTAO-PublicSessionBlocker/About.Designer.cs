@@ -102,7 +102,7 @@ namespace GTAO_PublicSessionBlocker
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(271, 17);
             this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = String.Format("Version {0}", ProductVersion);
+            this.labelVersion.Text = "Version 4.8.9251.0";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCopyright

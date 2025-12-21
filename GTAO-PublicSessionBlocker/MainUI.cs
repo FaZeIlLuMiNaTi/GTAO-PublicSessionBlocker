@@ -297,7 +297,7 @@ namespace GTAO_PublicSessionBlocker
         }
         
         private void GTAOPSBMain_Load(object sender, EventArgs e)
-        {            
+        {
             CheckUpdate(false); // Check for any updates - not manually invoked
 
             String[] keys = new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }; // Keys to be used
@@ -326,6 +326,8 @@ namespace GTAO_PublicSessionBlocker
             UnregisterHotKey(Handle, GetType().GetHashCode());
 
             FireWallRemove();
+
+            Resume(); // Resume the process if it was suspended at exit
 
             Settings.Default.BoundKey = CmbKey.SelectedIndex;
             Settings.Default.SelectedGame = CmbGames.SelectedIndex;
