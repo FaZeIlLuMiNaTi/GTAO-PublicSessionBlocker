@@ -87,7 +87,7 @@ namespace GTAO_PublicSessionBlocker
                 }
                 else if (localVersion > remoteVersion)
                 {
-                    MessageBox.Show("You seem to be running a newer version than currently available to download.");
+                    MessageBox.Show("You seem to be running a newer version than currently available to download.", "Version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (ManuallyInvoked)
                 {
