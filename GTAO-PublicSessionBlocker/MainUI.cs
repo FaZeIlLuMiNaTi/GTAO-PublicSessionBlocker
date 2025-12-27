@@ -319,6 +319,7 @@ namespace GTAO_PublicSessionBlocker
             usingTimermode = ChkTimerMode.Checked = Settings.Default.UsingTimermode;
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
+            alwaysOnTopToolStripMenuItem.Checked = Settings.Default.TopMost;
         }
 
         private void GTAOPSBMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -333,6 +334,7 @@ namespace GTAO_PublicSessionBlocker
             Settings.Default.SelectedGame = CmbGames.SelectedIndex;
             Settings.Default.UsingTimermode = usingTimermode;
             Settings.Default.BlockingPort = blockingPort;
+            Settings.Default.TopMost = alwaysOnTopToolStripMenuItem.Checked;
 
             Settings.Default.Save(); // Save the settings
         }
@@ -401,6 +403,18 @@ namespace GTAO_PublicSessionBlocker
         private void CmbGames_SelectedIndexChanged(object sender, EventArgs e)
         {
             targetprocess = processes[CmbGames.SelectedIndex];
+        }
+
+        private void alwaysOnTopToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (alwaysOnTopToolStripMenuItem.Checked)
+            {
+                TopMost = true;
+            }
+            else
+            {
+                TopMost = false;
+            }
         }
     }
 }
