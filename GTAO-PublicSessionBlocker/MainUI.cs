@@ -298,8 +298,6 @@ namespace GTAO_PublicSessionBlocker
         
         private void GTAOPSBMain_Load(object sender, EventArgs e)
         {
-            CheckUpdate(false); // Check for any updates - not manually invoked
-
             String[] keys = new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }; // Keys to be used
             foreach (string ke in keys)
             {
@@ -320,6 +318,12 @@ namespace GTAO_PublicSessionBlocker
             blockingPort = ChkBlockPort.Checked = Settings.Default.BlockingPort;
             BtnResume.Enabled = false;
             alwaysOnTopToolStripMenuItem.Checked = Settings.Default.TopMost;
+            autoCheckForUpdatesToolStripMenuItem.Checked = Settings.Default.AutoUpdate;
+
+            if (Settings.Default.AutoUpdate)
+            {
+                CheckUpdate(false); // Check for any updates - not manually invoked
+            }
         }
 
         private void GTAOPSBMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -335,6 +339,7 @@ namespace GTAO_PublicSessionBlocker
             Settings.Default.UsingTimermode = usingTimermode;
             Settings.Default.BlockingPort = blockingPort;
             Settings.Default.TopMost = alwaysOnTopToolStripMenuItem.Checked;
+            Settings.Default.AutoUpdate = autoCheckForUpdatesToolStripMenuItem.Checked;
 
             Settings.Default.Save(); // Save the settings
         }
